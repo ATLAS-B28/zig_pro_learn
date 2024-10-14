@@ -303,7 +303,47 @@ test "usize" {
     try expect(@sizeOf(isize) == @sizeOf(*u8));
 }
 
-//many-item pointers
+fn total(values: []const u8) usize {
+    var sum: usize = 0;
+    for (values) |v| sum += v;
+    return sum;
+}
+
+test "slices" {
+    const array = [_]u8{ 1, 2, 3, 4, 5 };
+    const slice = array[0..3];
+    //the syntax x[n..m] is used to
+    //create a slice from an array.
+    //This is called slicing, and
+    //creates a slice of the elements
+    //starting at x[n] and ending
+    //at x[m - 1].
+    try expect(total(slice) == 6);
+}
+
+test "slices 2" {
+    const array = [_]u8{ 1, 2, 3, 4, 5, 6 };
+    const slice = array[0..4];
+    try expect(@TypeOf(slice) == *const [4]u8);
+    //when thses n and m values are known
+    //at compile time slicing actually
+    //creates a pointer to an array
+}
+
+test "slices 3" {
+    var array = [_]u8{ 1, 2, 3, 4, 5 };
+    var slice = array[0..];
+    _ = slice;
+}
+//enums
+//const Direction = enum { north, south, east, west };
+const Value = enum(u2) { zero, one, two };
+
+test "enum ordinal value" {
+    try expect(@intFromEnum(Value.zero) == 0);
+    try expect(@intFromEnum(Value.one) == 0);
+    try expect(@intFromEnum(Value.two) == 0);
+}
 
 pub fn main() void { //pub stands for public function
     const runner = std.testing.createRunner();
